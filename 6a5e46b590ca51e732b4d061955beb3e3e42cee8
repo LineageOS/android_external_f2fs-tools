@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f1d235d_52f8ffc2",
+        "filename": "Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2015-09-07T11:03:27Z",
+      "side": 0,
+      "message": "Removing a file?",
+      "revId": "6a5e46b590ca51e732b4d061955beb3e3e42cee8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
