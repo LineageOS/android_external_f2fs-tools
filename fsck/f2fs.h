@@ -11,6 +11,7 @@
 #ifndef _F2FS_H_
 #define _F2FS_H_
 
+#include <f2fs_fs.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -18,13 +19,13 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#ifdef HAVE_MNTENT_H
 #include <mntent.h>
+#endif
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <assert.h>
-
-#include <f2fs_fs.h>
 
 #define EXIT_ERR_CODE		(-1)
 #define ver_after(a, b) (typecheck(unsigned long long, a) &&            \
@@ -129,6 +130,7 @@ struct f2fs_dentry_ptr {
 	struct f2fs_dir_entry *dentry;
 	__u8 (*filename)[F2FS_SLOT_LEN];
 	int max;
+	int nr_bitmap;
 };
 
 struct dentry {
@@ -232,7 +234,9 @@ static inline struct sit_info *SIT_I(struct f2fs_sb_info *sbi)
 
 static inline void *inline_data_addr(struct f2fs_node *node_blk)
 {
-	return (void *)&(node_blk->i.i_addr[1]);
+	int ofs = get_extra_isize(node_blk) + DEF_INLINE_RESERVED_SIZE;
+
+	return (void *)&(node_blk->i.i_addr[ofs]);
 }
 
 static inline unsigned int ofs_of_node(struct f2fs_node *node_blk)
@@ -273,7 +277,7 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
 static inline bool is_set_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
 {
 	unsigned int ckpt_flags = le32_to_cpu(cp->ckpt_flags);
-	return ckpt_flags & f;
+	return ckpt_flags & f ? 1 : 0;
 }
 
 static inline block_t __start_cp_addr(struct f2fs_sb_info *sbi)
@@ -451,14 +455,13 @@ static inline int map_de_type(umode_t mode)
 
 static inline void *inline_xattr_addr(struct f2fs_inode *inode)
 {
-	return (void *)&(inode->i_addr[DEF_ADDRS_PER_INODE_INLINE_XATTR]);
+	return (void *)&(inode->i_addr[DEF_ADDRS_PER_INODE -
+				get_inline_xattr_addrs(inode)]);
 }
 
 static inline int inline_xattr_size(struct f2fs_inode *inode)
 {
-	if (inode->i_inline & F2FS_INLINE_XATTR)
-		return F2FS_INLINE_XATTR_ADDRS << 2;
-	return 0;
+	return get_inline_xattr_addrs(inode) * sizeof(__le32);
 }
 
 extern int lookup_nat_in_journal(struct f2fs_sb_info *sbi, u32 nid, struct f2fs_nat_entry *ne);
