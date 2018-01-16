@@ -14,7 +14,11 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#ifdef __linux__
 #include <mntent.h>
+#include <linux/hdreg.h>
+#include <linux/limits.h>
+#endif
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/mount.h>
@@ -22,8 +26,6 @@
 #ifndef WITH_ANDROID
 #include <scsi/sg.h>
 #endif
-#include <linux/hdreg.h>
-#include <linux/limits.h>
 
 #include <f2fs_fs.h>
 
@@ -582,6 +584,7 @@ void f2fs_init_configuration(void)
 
 static int is_mounted(const char *mpt, const char *device)
 {
+#ifdef __linux__
 	FILE *file = NULL;
 	struct mntent *mnt = NULL;
 
@@ -600,6 +603,9 @@ static int is_mounted(const char *mpt, const char *device)
 	}
 	endmntent(file);
 	return mnt ? 1 : 0;
+#else
+	return 0;
+#endif
 }
 
 int f2fs_dev_is_umounted(char *path)
@@ -621,11 +627,13 @@ int f2fs_dev_is_umounted(char *path)
 		return -1;
 	}
 
+#ifdef __linux__
 	ret = is_mounted(MOUNTED, path);
 	if (ret) {
 		MSG(0, "Info: Mounted device!\n");
 		return -1;
 	}
+#endif
 
 	/*
 	 * If we are supposed to operate on the root device, then
@@ -685,7 +693,9 @@ int get_device_info(int i)
 	uint32_t total_sectors;
 #endif
 	struct stat stat_buf;
+#ifdef __linux__
 	struct hd_geometry geom;
+#endif
 #ifndef WITH_ANDROID
 	sg_io_hdr_t io_hdr;
 	unsigned char reply_buffer[96] = {0};
@@ -722,6 +732,7 @@ int get_device_info(int i)
 		dev->total_sectors = c.device_size / dev->sector_size;
 	} else if (S_ISREG(stat_buf.st_mode)) {
 		dev->total_sectors = stat_buf.st_size / dev->sector_size;
+#ifdef __linux__
 	} else if (S_ISBLK(stat_buf.st_mode)) {
 		if (ioctl(fd, BLKSSZGET, &sector_size) < 0)
 			MSG(0, "\tError: Using the default sector size\n");
@@ -768,6 +779,7 @@ int get_device_info(int i)
 				printf("%c", reply_buffer[i++]);
 			printf("\n");
 		}
+#endif
 #endif
 	} else {
 		MSG(0, "\tError: Volume type is not supported!!!\n");

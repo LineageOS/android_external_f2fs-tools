@@ -18,7 +18,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#ifdef __linux__
 #include <mntent.h>
+#endif
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/mount.h>
