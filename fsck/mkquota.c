@@ -52,13 +52,13 @@ static void write_dquots(dict_t *dict, struct quota_handle *qh)
 		if (dq) {
 			print_dquot("write", dq);
 			dq->dq_h = qh;
-			update_grace_times(dq);
+			f2fs_update_grace_times(dq);
 			qh->qh_ops->commit_dquot(dq);
 		}
 	}
 }
 
-errcode_t quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype)
+errcode_t f2fs_quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype)
 {
 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
@@ -78,12 +78,12 @@ errcode_t quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype)
 
 	dict = qctx->quota_dict[qtype];
 	if (dict) {
-		retval = quota_file_create(sbi, h, qtype);
+		retval = f2fs_quota_file_create(sbi, h, qtype);
 		if (retval) {
 			log_debug("Cannot initialize io on quotafile");
 		} else {
 			write_dquots(dict, h);
-			quota_file_close(sbi, h, 1);
+			f2fs_quota_file_close(sbi, h, 1);
 		}
 	}
 out:
@@ -138,7 +138,7 @@ static void quota_dnode_free(dnode_t *node, void *UNUSED(context))
 /*
  * Set up the quota tracking data structures.
  */
-errcode_t quota_init_context(struct f2fs_sb_info *sbi)
+errcode_t f2fs_quota_init_context(struct f2fs_sb_info *sbi)
 {
 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
@@ -162,7 +162,7 @@ errcode_t quota_init_context(struct f2fs_sb_info *sbi)
 		err = quota_get_mem(sizeof(dict_t), &dict);
 		if (err) {
 			log_debug("Failed to allocate dictionary");
-			quota_release_context(&ctx);
+			f2fs_quota_release_context(&ctx);
 			return err;
 		}
 		ctx->quota_dict[qtype] = dict;
@@ -174,7 +174,7 @@ errcode_t quota_init_context(struct f2fs_sb_info *sbi)
 	return 0;
 }
 
-void quota_release_context(quota_ctx_t *qctx)
+void f2fs_quota_release_context(quota_ctx_t *qctx)
 {
 	dict_t	*dict;
 	enum quota_type	qtype;
@@ -220,7 +220,7 @@ static struct dquot *get_dq(dict_t *dict, __u32 key)
 /*
  * Called to update the blocks used by a particular inode
  */
-void quota_data_add(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
+void f2fs_quota_data_add(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
 {
 	struct dquot	*dq;
 	dict_t		*dict;
@@ -242,7 +242,7 @@ void quota_data_add(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
 /*
  * Called to remove some blocks used by a particular inode
  */
-void quota_data_sub(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
+void f2fs_quota_data_sub(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
 {
 	struct dquot	*dq;
 	dict_t		*dict;
@@ -263,7 +263,7 @@ void quota_data_sub(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space)
 /*
  * Called to count the files used by an inode's user/group
  */
-void quota_data_inodes(quota_ctx_t qctx, struct f2fs_inode *inode, int adjust)
+void f2fs_quota_data_inodes(quota_ctx_t qctx, struct f2fs_inode *inode, int adjust)
 {
 	struct dquot	*dq;
 	dict_t		*dict; enum quota_type	qtype;
@@ -283,7 +283,7 @@ void quota_data_inodes(quota_ctx_t qctx, struct f2fs_inode *inode, int adjust)
 /*
  * Called from fsck to count quota.
  */
-void quota_add_inode_usage(quota_ctx_t qctx, f2fs_ino_t ino,
+void f2fs_quota_add_inode_usage(quota_ctx_t qctx, f2fs_ino_t ino,
 		struct f2fs_inode* inode)
 {
 	if (qctx) {
@@ -298,8 +298,8 @@ void quota_add_inode_usage(quota_ctx_t qctx, f2fs_ino_t ino,
 		}
 
 		qsize_t space = (inode->i_blocks - 1) * BLOCK_SZ;
-		quota_data_add(qctx, inode, space);
-		quota_data_inodes(qctx, inode, +1);
+		f2fs_quota_data_add(qctx, inode, space);
+		f2fs_quota_data_inodes(qctx, inode, +1);
 	}
 }
 
@@ -354,7 +354,7 @@ static int scan_dquots_callback(struct dquot *dquot, void *cb_data)
  * on disk and updates the limits in qctx->quota_dict. 'usage_inconsistent' is
  * set to 1 if the supplied and on-disk quota usage values are not identical.
  */
-errcode_t quota_compare_and_update(struct f2fs_sb_info *sbi,
+errcode_t f2fs_quota_compare_and_update(struct f2fs_sb_info *sbi,
 		enum quota_type qtype, int *usage_inconsistent,
 		int preserve_limits)
 {
@@ -370,7 +370,7 @@ errcode_t quota_compare_and_update(struct f2fs_sb_info *sbi,
 	if (!dict)
 		goto out;
 
-	err = quota_file_open(sbi, &qh, qtype, 0);
+	err = f2fs_quota_file_open(sbi, &qh, qtype, 0);
 	if (err) {
 		log_debug("Open quota file failed");
 		goto out;
