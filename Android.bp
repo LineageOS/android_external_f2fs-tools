@@ -180,3 +180,46 @@ cc_binary {
     },
     stl: "libc++_static",
 }
+
+// Libraries for recovery
+
+cc_library_static {
+    name: "libf2fs",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "lib/libf2fs.c",
+        "lib/libf2fs_io.c",
+    ],
+}
+
+cc_library_static {
+    name: "libf2fs_fsck",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "fsck/dir.c",
+        "fsck/dump.c",
+        "fsck/fsck.c",
+        "fsck/main.c",
+        "fsck/mkquota.c",
+        "fsck/mount.c",
+        "fsck/segment.c",
+    ],
+    cflags: ["-Dmain=fsck_f2fs_main"],
+}
+
+cc_library_static {
+    name: "libf2fs_mkfs",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "mkfs/f2fs_format.c",
+        "mkfs/f2fs_format_utils.c",
+        "mkfs/f2fs_format_main.c",
+    ],
+    cflags: ["-Dmain=mkfs_f2fs_main"],
+}
