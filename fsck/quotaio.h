@@ -207,15 +207,15 @@ const char *quota_type2name(enum quota_type qtype);
 void update_grace_times(struct dquot *q);
 
 /* In mkquota.c */
-errcode_t quota_init_context(struct f2fs_sb_info *sbi);
-void quota_data_inodes(quota_ctx_t qctx, struct f2fs_inode *inode, int adjust);
-void quota_data_add(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space);
-void quota_data_sub(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space);
-errcode_t quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype);
-void quota_add_inode_usage(quota_ctx_t qctx, f2fs_ino_t ino,
+errcode_t f2fs_quota_init_context(struct f2fs_sb_info *sbi);
+void f2fs_quota_data_inodes(quota_ctx_t qctx, struct f2fs_inode *inode, int adjust);
+void f2fs_quota_data_add(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space);
+void f2fs_quota_data_sub(quota_ctx_t qctx, struct f2fs_inode *inode, qsize_t space);
+errcode_t f2fs_quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype);
+void f2fs_quota_add_inode_usage(quota_ctx_t qctx, f2fs_ino_t ino,
 		struct f2fs_inode* inode);
-void quota_release_context(quota_ctx_t *qctx);
-errcode_t quota_compare_and_update(struct f2fs_sb_info *sbi,
+void f2fs_quota_release_context(quota_ctx_t *qctx);
+errcode_t f2fs_quota_compare_and_update(struct f2fs_sb_info *sbi,
 		enum quota_type qtype, int *usage_inconsistent,
 		int preserve_limits);
 
