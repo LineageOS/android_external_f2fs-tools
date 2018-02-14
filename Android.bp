@@ -193,3 +193,51 @@ cc_binary {
     cflags: ["--static"],
     srcs: ["tools/check_f2fs.c"],
 }
+
+// Libraries for recovery
+
+cc_library_static {
+    name: "libf2fs",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "lib/libf2fs.c",
+        "lib/libf2fs_io.c",
+    ],
+}
+
+cc_library_static {
+    name: "libf2fs_fsck",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "fsck/dict.c",
+        "fsck/dir.c",
+        "fsck/fsck.c",
+        "fsck/main.c",
+        "fsck/mkquota.c",
+        "fsck/mount.c",
+        "fsck/node.c",
+        "fsck/quotaio.c",
+        "fsck/quotaio_tree.c",
+        "fsck/quotaio_v2.c",
+        "fsck/segment.c",
+        "fsck/xattr.c",
+    ],
+    cflags: ["-Dmain=fsck_f2fs_main"],
+}
+
+cc_library_static {
+    name: "libf2fs_mkfs",
+    defaults: [
+        "f2fs-tools-defaults",
+    ],
+    srcs: [
+        "mkfs/f2fs_format.c",
+        "mkfs/f2fs_format_utils.c",
+        "mkfs/f2fs_format_main.c",
+    ],
+    cflags: ["-Dmain=mkfs_f2fs_main"],
+}
