@@ -36,7 +36,7 @@ struct disk_dqheader {
 /**
  * Convert type of quota to written representation
  */
-const char *quota_type2name(enum quota_type qtype)
+const char *f2fs_quota_type2name(enum quota_type qtype)
 {
 	if (qtype >= MAXQUOTAS)
 		return "unknown";
@@ -46,7 +46,7 @@ const char *quota_type2name(enum quota_type qtype)
 /*
  * Set grace time if needed
  */
-void update_grace_times(struct dquot *q)
+void f2fs_update_grace_times(struct dquot *q)
 {
 	time_t now;
 
@@ -93,7 +93,7 @@ static unsigned int quota_read_nomount(struct quota_file *qf, long offset,
 /*
  * Detect quota format and initialize quota IO
  */
-errcode_t quota_file_open(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_open(struct f2fs_sb_info *sbi, struct quota_handle *h,
 			  enum quota_type qtype, int flags)
 {
 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
@@ -111,7 +111,7 @@ errcode_t quota_file_open(struct f2fs_sb_info *sbi, struct quota_handle *h,
 	if (!h) {
 		if (qctx->quota_file[qtype]) {
 			h = qctx->quota_file[qtype];
-			(void) quota_file_close(sbi, h, 0);
+			(void) f2fs_quota_file_close(sbi, h, 0);
 		}
 		err = quota_get_mem(sizeof(struct quota_handle), &h);
 		if (err) {
@@ -153,7 +153,7 @@ errout:
 /*
  * Create new quotafile of specified format on given filesystem
  */
-errcode_t quota_file_create(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_create(struct f2fs_sb_info *sbi, struct quota_handle *h,
 		enum quota_type qtype)
 {
 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
@@ -183,7 +183,7 @@ errcode_t quota_file_create(struct f2fs_sb_info *sbi, struct quota_handle *h,
 /*
  * Close quotafile and release handle
  */
-errcode_t quota_file_close(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_close(struct f2fs_sb_info *sbi, struct quota_handle *h,
 		int update_filesize)
 {
 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
@@ -207,7 +207,7 @@ errcode_t quota_file_close(struct f2fs_sb_info *sbi, struct quota_handle *h,
 /*
  * Create empty quota structure
  */
-struct dquot *get_empty_dquot(void)
+struct dquot *f2fs_get_empty_dquot(void)
 {
 	struct dquot *dquot;
 
