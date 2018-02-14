@@ -555,7 +555,7 @@ static void do_fsck(struct f2fs_sb_info *sbi)
 	blk_cnt = 1;
 
 	if (c.feature & cpu_to_le32(F2FS_FEATURE_QUOTA_INO)) {
-		ret = quota_init_context(sbi);
+		ret = f2fs_quota_init_context(sbi);
 		if (ret) {
 			ASSERT_MSG("quota_init_context failure: %d", ret);
 			return;

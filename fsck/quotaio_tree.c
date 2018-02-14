@@ -512,7 +512,7 @@ struct dquot *qtree_read_dquot(struct quota_handle *h, qid_t id)
 	long offset;
 	unsigned int ret;
 	char *ddquot;
-	struct dquot *dquot = get_empty_dquot();
+	struct dquot *dquot = f2fs_get_empty_dquot();
 
 	if (!dquot)
 		return NULL;
@@ -591,7 +591,7 @@ static int check_reference(struct quota_handle *h, unsigned int blk)
 			"Please run fsck (8) to fix it.",
 			blk,
 			h->qh_info.u.v2_mdqi.dqi_qtree.dqi_blocks,
-			quota_type2name(h->qh_type));
+			f2fs_quota_type2name(h->qh_type));
 		return -1;
 	}
 	return 0;
@@ -650,7 +650,7 @@ int qtree_scan_dquots(struct quota_handle *h,
 {
 	struct v2_mem_dqinfo *v2info = &h->qh_info.u.v2_mdqi;
 	struct qtree_mem_dqinfo *info = &v2info->dqi_qtree;
-	struct dquot *dquot = get_empty_dquot();
+	struct dquot *dquot = f2fs_get_empty_dquot();
 	char *bitmap = NULL;
 	int ret = -1;
 	int entries = 0;
