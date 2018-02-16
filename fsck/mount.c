@@ -291,7 +291,7 @@ static void DISP_label(u_int16_t *name)
 {
 	char buffer[MAX_VOLUME_NAME];
 
-	utf16_to_utf8(buffer, name, MAX_VOLUME_NAME, MAX_VOLUME_NAME);
+	f2fs_utf16_to_utf8(buffer, name, MAX_VOLUME_NAME, MAX_VOLUME_NAME);
 	printf("%-30s" "\t\t[%s]\n", "volum_name", buffer);
 }
 
