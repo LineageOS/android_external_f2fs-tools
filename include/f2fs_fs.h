@@ -1095,8 +1095,8 @@ enum {
 	SSR
 };
 
-extern int utf8_to_utf16(u_int16_t *, const char *, size_t, size_t);
-extern int utf16_to_utf8(char *, const u_int16_t *, size_t, size_t);
+extern int f2fs_utf8_to_utf16(u_int16_t *, const char *, size_t, size_t);
+extern int f2fs_utf16_to_utf8(char *, const u_int16_t *, size_t, size_t);
 extern int log_base_2(u_int32_t);
 extern unsigned int addrs_per_inode(struct f2fs_inode *);
 extern __u32 f2fs_inode_chksum(struct f2fs_node *);
