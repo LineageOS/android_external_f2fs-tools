@@ -2408,7 +2408,7 @@ static int fsck_reconnect_file(struct f2fs_sb_info *sbi)
 				continue;
 			}
 
-			quota_add_inode_usage(fsck->qctx, nid, &node->i);
+			f2fs_quota_add_inode_usage(fsck->qctx, nid, &node->i);
 
 			DBG(1, "Reconnected inode [0x%x] to lost+found\n", nid);
 			cnt++;
