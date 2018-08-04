@@ -52,7 +52,7 @@ static void write_dquots(dict_t *dict, struct quota_handle *qh)
 		if (dq) {
 			print_dquot("write", dq);
 			dq->dq_h = qh;
-			update_grace_times(dq);
+			f2fs_update_grace_times(dq);
 			qh->qh_ops->commit_dquot(dq);
 		}
 	}
@@ -78,12 +78,12 @@ errcode_t f2fs_quota_write_inode(struct f2fs_sb_info *sbi, enum quota_type qtype
 
 	dict = qctx->quota_dict[qtype];
 	if (dict) {
-		retval = quota_file_create(sbi, h, qtype);
+		retval = f2fs_quota_file_create(sbi, h, qtype);
 		if (retval) {
 			log_debug("Cannot initialize io on quotafile");
 		} else {
 			write_dquots(dict, h);
-			quota_file_close(sbi, h, 1);
+			f2fs_quota_file_close(sbi, h, 1);
 		}
 	}
 out:
@@ -370,7 +370,7 @@ errcode_t f2fs_quota_compare_and_update(struct f2fs_sb_info *sbi,
 	if (!dict)
 		goto out;
 
-	err = quota_file_open(sbi, &qh, qtype, 0);
+	err = f2fs_quota_file_open(sbi, &qh, qtype, 0);
 	if (err) {
 		log_debug("Open quota file failed");
 		goto out;

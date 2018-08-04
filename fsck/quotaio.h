@@ -190,21 +190,21 @@ struct quotafile_ops {
 
 /* Open existing quotafile of given type (and verify its format) on given
  * filesystem. */
-errcode_t quota_file_open(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_open(struct f2fs_sb_info *sbi, struct quota_handle *h,
 			  enum quota_type qtype, int flags);
 
 /* Create new quotafile of specified format on given filesystem */
-errcode_t quota_file_create(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_create(struct f2fs_sb_info *sbi, struct quota_handle *h,
 		enum quota_type qtype);
 
 /* Close quotafile */
-errcode_t quota_file_close(struct f2fs_sb_info *sbi, struct quota_handle *h,
+errcode_t f2fs_quota_file_close(struct f2fs_sb_info *sbi, struct quota_handle *h,
 		int update_filesize);
 
 /* Get empty quota structure */
-struct dquot *get_empty_dquot(void);
-const char *quota_type2name(enum quota_type qtype);
-void update_grace_times(struct dquot *q);
+struct dquot *f2fs_get_empty_dquot(void);
+const char *f2fs_quota_type2name(enum quota_type qtype);
+void f2fs_update_grace_times(struct dquot *q);
 
 /* In mkquota.c */
 errcode_t f2fs_quota_init_context(struct f2fs_sb_info *sbi);
