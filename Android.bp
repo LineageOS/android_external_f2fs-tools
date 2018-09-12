@@ -4,9 +4,9 @@ cc_defaults {
     name: "f2fs-tools-defaults",
     cflags: [
         "-DF2FS_MAJOR_VERSION=1",
-        "-DF2FS_MINOR_VERSION=10",
-        "-DF2FS_TOOLS_VERSION=\"1.10.0\"",
-        "-DF2FS_TOOLS_DATE=\"2018-01-30\"",
+        "-DF2FS_MINOR_VERSION=11",
+        "-DF2FS_TOOLS_VERSION=\"1.11.0\"",
+        "-DF2FS_TOOLS_DATE=\"2018-07-10\"",
         "-DWITH_ANDROID",
         "-Wall",
         "-Werror",
@@ -35,10 +35,12 @@ cc_defaults {
 
 cc_defaults {
     name: "libf2fs_src_files",
+    cflags: ["-DWITH_BLKDISCARD"],
     srcs: [
         "lib/libf2fs.c",
         "mkfs/f2fs_format.c",
         "mkfs/f2fs_format_utils.c",
+        "lib/libf2fs_zoned.c",
     ],
 }
 
@@ -86,7 +88,11 @@ cc_library_host_static {
     target: {
         windows: {
             include_dirs: [ "external/e2fsprogs/include/mingw" ],
-            cflags: ["-DANDROID_WINDOWS_HOST"],
+            cflags: [
+                "-DANDROID_WINDOWS_HOST",
+                "-Wno-typedef-redefinition",
+                "-Wno-unused-parameter",
+            ],
             enabled: true
 	},
     },
