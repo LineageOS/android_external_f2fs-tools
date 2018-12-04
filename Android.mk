@@ -5,7 +5,7 @@ ifneq (,$filter linux darwin,$(HOST_OS))
 
 # The versions depend on $(LOCAL_PATH)/VERSION
 version_CFLAGS := -DF2FS_MAJOR_VERSION=1 -DF2FS_MINOR_VERSION=11 -DF2FS_TOOLS_VERSION=\"1.11.0\" -DF2FS_TOOLS_DATE=\"2018-07-10\"
-common_CFLAGS := -DWITH_ANDROID $(version_CFLAGS) \
+common_CFLAGS := -DWITH_ANDROID -DWITH_BLKDISCARD $(version_CFLAGS) \
     -Wall -Werror \
     -Wno-format \
     -Wno-macro-redefined \
@@ -67,7 +67,8 @@ LOCAL_SRC_FILES := \
     fsck/main.c \
     fsck/mount.c \
     lib/libf2fs.c \
-    lib/libf2fs_io.c
+    lib/libf2fs_io.c \
+    lib/libf2fs_zoned.c
 LOCAL_C_INCLUDES := $(common_C_INCLUDES)
 LOCAL_CFLAGS := $(common_CFLAGS) -DWITH_SLOAD
 LOCAL_STATIC_LIBRARIES := \
