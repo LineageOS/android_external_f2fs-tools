@@ -8,6 +8,7 @@ cc_defaults {
         "-DF2FS_TOOLS_VERSION=\"1.11.0\"",
         "-DF2FS_TOOLS_DATE=\"2018-07-10\"",
         "-DWITH_ANDROID",
+        "-DWITH_BLKDISCARD",
         "-Wall",
         "-Werror",
         "-Wno-format",
@@ -37,6 +38,7 @@ cc_defaults {
     name: "libf2fs_src_files",
     srcs: [
         "lib/libf2fs.c",
+        "lib/libf2fs_zoned.c",
         "mkfs/f2fs_format.c",
         "mkfs/f2fs_format_utils.c",
     ],
@@ -66,6 +68,7 @@ cc_defaults {
         "fsck/mount.c",
         "lib/libf2fs.c",
         "lib/libf2fs_io.c",
+        "lib/libf2fs_zoned.c",
     ],
 }
 
@@ -198,6 +201,7 @@ cc_library_static {
     srcs: [
         "lib/libf2fs.c",
         "lib/libf2fs_io.c",
+        "lib/libf2fs_zoned.c",
     ],
 }
 
