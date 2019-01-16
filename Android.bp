@@ -221,8 +221,14 @@ cc_library_static {
         "fsck/mount.c",
         "fsck/node.c",
         "fsck/segment.c",
+        "fsck/xattr.c",
+        "fsck/sload.c",
     ],
-    cflags: ["-Dmain=fsck_f2fs_main"],
+    cflags: ["-DWITH_SLOAD", "-Dmain=fsck_f2fs_main"],
+    static_libs: [
+        "libselinux",
+        "libcutils",
+    ],
 }
 
 cc_library_static {
